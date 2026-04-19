@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>スコア</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;
+  color: #0ff;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+/* 入力画面 */
+#inputScreen {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* 入力欄 */
+input {
+  padding: 15px;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  background: #111;
+  color: #0ff;
+  border: 2px solid #0ff;
+}
+
+/* ボタン */
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: black;
+  color: #0ff;
+  border: 2px solid #0ff;
+  cursor: pointer;
+}
+
+/* 結果画面 */
+#resultScreen {
+  display: none;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 60px;
+}
+
+/* 名前 */
+.name {
+  font-size: 80px;
+  text-shadow: 0 0 20px #0ff;
+}
+
+/* スコア */
+.score {
+  font-size: 60px;
+  margin-top: 20px;
+  text-shadow: 0 0 20px #0ff;
+}
+
+/* フラッシュ演出 */
+.flash {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #0ff;
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 入力画面 -->
+<div id="inputScreen">
+  <h1>ENTER NAME</h1>
+  <input type="text" id="nameInput">
+  <button onclick="search()">SEARCH</button>
+</div>
+
+<!-- 結果画面 -->
+<div id="resultScreen">
+  <div class="name" id="name"></div>
+  <div class="score" id="score"></div>
+</div>
+
+<!-- フラッシュ -->
+<div id="flash" class="flash"></div>
+
+<script>
+const url = "https://script.google.com/macros/s/AKfycbyZaOEyB6FFHNho2esrHK8MZT9CO2212L-OQravkFlAZxib6fEsgdn3BaZ5dKiM_bYVSg/exec";
+
+let players = [];
+
+// データ取得
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    players = data.map(p => ({
+      name: p.name.trim(),
+      score: p.score
+    }));
+  });
+
+function search() {
+  const input = document.getElementById("nameInput").value.trim();
+
+  const player = players.find(p => p.name.includes(input));
+
+  if (!player) {
+    alert("見つかりません");
+    return;
+  }
+
+  // 🔥 フラッシュ演出
+  const flash = document.getElementById("flash");
+  flash.style.opacity = 1;
+  flash.style.transition = "0.2s";
+  
+  setTimeout(() => {
+    flash.style.opacity = 0;
+  }, 200);
+
+  // 🔥 画面切り替え
+  setTimeout(() => {
+    document.getElementById("inputScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "flex";
+
+    document.getElementById("name").textContent = player.name;
+    document.getElementById("score").textContent = player.score + " pts";
+  }, 200);
+}
+
+// Enterキー
+document.getElementById("nameInput").addEventListener("keypress", e => {
+  if (e.key === "Enter") search();
+});
+</script>
+
+</body>
+</html>
