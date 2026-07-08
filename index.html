@@ -47,6 +47,11 @@ button {
   color: #0ff;
   border: 2px solid #0ff;
   cursor: pointer;
+  font-size: 18px;
+}
+
+button:hover {
+  box-shadow: 0 0 10px #0ff;
 }
 
 /* 結果画面 */
@@ -56,7 +61,6 @@ button {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-size: 60px;
 }
 
 /* 名前 */
@@ -88,31 +92,55 @@ button {
 
 <!-- 入力画面 -->
 <div id="inputScreen">
+
   <h1>ENTER NAME</h1>
-  <form autocomplete="off">
-  <input
-    type="text"
-    id="nameInput"
-    name="search_input"
-    autocomplete="new-password"
-    spellcheck="false"
-    autocorrect="off"
-    autocapitalize="off">
-</form>
+
+  <form autocomplete="off" onsubmit="event.preventDefault(); search();">
+
+    <input
+      type="text"
+      id="nameInput"
+      name="search_input"
+      autocomplete="new-password"
+      spellcheck="false"
+      autocorrect="off"
+      autocapitalize="off">
+
+  </form>
+
   <button onclick="search()">SEARCH</button>
+
 </div>
 
 <!-- 結果画面 -->
 <div id="resultScreen">
+
   <div class="name" id="name"></div>
+
   <div class="score" id="score"></div>
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <button onclick="goBack()">
+    戻る
+  </button>
+
 </div>
 
 <!-- フラッシュ -->
 <div id="flash" class="flash"></div>
 
 <script>
-const url = "https://script.google.com/macros/s/AKfycbwSRP0UYMd96CnH3la3Mt7YL6uSrr5rHSxx9J3tseSLX2g7vTtXpYlxzBmOXAbUVZxF6w/exec";
+
+const url =
+"https://script.google.com/macros/s/AKfycbwSRP0UYMd96CnH3la3Mt7YL6uSrr5rHSxx9J3tseSLX2g7vTtXpYlxzBmOXAbUVZxF6w/exec";
 
 let players = [];
 
@@ -120,45 +148,101 @@ let players = [];
 fetch(url)
   .then(res => res.json())
   .then(data => {
+
     players = data.map(p => ({
-      name: p.name.trim(),
+      name: String(p.name).trim(),
       score: p.score
     }));
+
   });
 
 function search() {
-  const input = document.getElementById("nameInput").value.trim();
 
-  const player = players.find(p => p.name.includes(input));
+  const input =
+    document
+      .getElementById("nameInput")
+      .value
+      .trim();
+
+  if (!input) {
+    alert("名前を入力してください");
+    return;
+  }
+
+  const player =
+    players.find(p =>
+      p.name.includes(input)
+    );
 
   if (!player) {
     alert("見つかりません");
     return;
   }
 
-  // 🔥 フラッシュ演出
-  const flash = document.getElementById("flash");
+  // フラッシュ演出
+  const flash =
+    document.getElementById("flash");
+
   flash.style.opacity = 1;
   flash.style.transition = "0.2s";
-  
+
   setTimeout(() => {
     flash.style.opacity = 0;
   }, 200);
 
-  // 🔥 画面切り替え
+  // 画面切替
   setTimeout(() => {
-    document.getElementById("inputScreen").style.display = "none";
-    document.getElementById("resultScreen").style.display = "flex";
 
-    document.getElementById("name").textContent = player.name;
-    document.getElementById("score").textContent = player.score + " pts";
+    document.getElementById("inputScreen")
+      .style.display = "none";
+
+    document.getElementById("resultScreen")
+      .style.display = "flex";
+
+    document.getElementById("name")
+      .textContent = player.name;
+
+    document.getElementById("score")
+      .textContent = player.score + " pts";
+
   }, 200);
+
+}
+
+// 戻るボタン
+function goBack() {
+
+  document.getElementById("resultScreen")
+    .style.display = "none";
+
+  document.getElementById("inputScreen")
+    .style.display = "flex";
+
+  document.getElementById("name")
+    .textContent = "";
+
+  document.getElementById("score")
+    .textContent = "";
+
+  document.getElementById("nameInput")
+    .value = "";
+
+  document.getElementById("nameInput")
+    .focus();
+
 }
 
 // Enterキー
-document.getElementById("nameInput").addEventListener("keypress", e => {
-  if (e.key === "Enter") search();
+document
+  .getElementById("nameInput")
+  .addEventListener("keypress", e => {
+
+    if (e.key === "Enter") {
+      search();
+    }
+
 });
+
 </script>
 
 </body>
