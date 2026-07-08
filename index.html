@@ -89,7 +89,16 @@ button {
 <!-- 入力画面 -->
 <div id="inputScreen">
   <h1>ENTER NAME</h1>
-  <input type="text" id="nameInput">
+  <form autocomplete="off">
+  <input
+    type="text"
+    id="nameInput"
+    name="search_input"
+    autocomplete="new-password"
+    spellcheck="false"
+    autocorrect="off"
+    autocapitalize="off">
+</form>
   <button onclick="search()">SEARCH</button>
 </div>
 
@@ -103,7 +112,7 @@ button {
 <div id="flash" class="flash"></div>
 
 <script>
-const url = "https://script.google.com/macros/s/AKfycbyZaOEyB6FFHNho2esrHK8MZT9CO2212L-OQravkFlAZxib6fEsgdn3BaZ5dKiM_bYVSg/exec";
+const url = "https://script.google.com/macros/s/AKfycbwSRP0UYMd96CnH3la3Mt7YL6uSrr5rHSxx9J3tseSLX2g7vTtXpYlxzBmOXAbUVZxF6w/exec";
 
 let players = [];
 
